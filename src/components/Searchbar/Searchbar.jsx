@@ -1,5 +1,13 @@
 import { Component } from 'react';
 
+import {
+  Header,
+  Form,
+  SearchButton,
+  SearchButtonLabel,
+  Input,
+} from './Searchbar.styled';
+
 export class Searchbar extends Component {
   state = {
     input: '',
@@ -19,14 +27,13 @@ export class Searchbar extends Component {
 
   render() {
     return (
-      <header className="searchbar">
-        <form className="form" onSubmit={this.handleSubmit}>
-          <button type="submit" className="button">
-            <span className="button-label">Search</span>
-          </button>
+      <Header>
+        <Form onSubmit={this.handleSubmit}>
+          <SearchButton type="submit">
+            <SearchButtonLabel>Search</SearchButtonLabel>
+          </SearchButton>
 
-          <input
-            className="input"
+          <Input
             type="text"
             autoComplete="off"
             autoFocus
@@ -34,8 +41,8 @@ export class Searchbar extends Component {
             value={this.state.input}
             onChange={this.handleChange}
           />
-        </form>
-      </header>
+        </Form>
+      </Header>
     );
   }
 }

@@ -1,8 +1,10 @@
+import { ImgGalleryItem, Image } from './ImageGalleryItem.styled';
+
 export const ImageGalleryItem = props => {
   // { id, webformatURL, largeImageURL }
   return (
-    <li className="gallery-item">
-      <img src={props.image.webformatURL} alt="" />
-    </li>
+    <ImgGalleryItem className="gallery-item">
+      <Image src={props.image.webformatURL} alt="" />
+    </ImgGalleryItem>
   );
 };

@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Loader } from 'components/Loader/Loader';
 import { fetchImg } from 'components/Api/Api';
+import { ImageGalleryList, ButtonLoadMore } from './ImageGallery.styled';
 
 export class ImageGallery extends Component {
   state = {
@@ -31,7 +32,7 @@ export class ImageGallery extends Component {
     }
   };
 
-  async componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.imgTheme && prevProps.imgTheme !== this.props.imgTheme) {
       try {
         this.setState({
@@ -48,21 +49,23 @@ export class ImageGallery extends Component {
 
   render() {
     const { status, images } = this.state;
+    // console.log(Loader);
 
     return (
       <>
         {images.length > 0 && (
-          <ul className="gallery">
+          <ImageGalleryList className="gallery">
             {this.state.images.map(image => {
               return <ImageGalleryItem key={image.id} image={image} />;
             })}
-          </ul>
+          </ImageGalleryList>
         )}
         {status === 'resolved' && (
-          <button type="button" onClick={() => this.loadImg()}>
+          <ButtonLoadMore type="button" onClick={() => this.loadImg()}>
             Load More
-          </button>
+          </ButtonLoadMore>
         )}
+        {/* {status === 'resolved' && <Loader />} */}
         {status === 'pending' && <Loader />}
       </>
     );
