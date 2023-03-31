@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Loader } from 'components/Loader/Loader';
-import axios from 'axios';
+import { fetchImg } from 'components/Api/Api';
 
 export class ImageGallery extends Component {
   state = {
@@ -15,16 +15,14 @@ export class ImageGallery extends Component {
     this.setState({ status: 'pending' });
 
     try {
-      const response = await axios.get(
-        `https://pixabay.com/api/?q=${this.props.imgTheme}&page=${this.state.page}&key=33648762-c4caeb57f8348b72b000e69b2&image_type=photo&orientation=horizontal&per_page=12`
-      );
+      const images = await fetchImg(this.props.imgTheme, this.state.page);
 
       this.setState(prevState => {
         return {
           page: prevState.page + 1,
           images: prevState.images
-            ? [...prevState.images, ...response.data.hits]
-            : [...response.data.hits],
+            ? [...prevState.images, ...images]
+            : [...images],
           status: 'resolved',
         };
       });
@@ -34,7 +32,6 @@ export class ImageGallery extends Component {
   };
 
   async componentDidUpdate(prevProps, prevState) {
-    // console.log('prevProps', prevProps);
     if (this.props.imgTheme && prevProps.imgTheme !== this.props.imgTheme) {
       try {
         this.setState({
