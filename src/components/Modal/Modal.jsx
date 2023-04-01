@@ -6,17 +6,14 @@ const modalRoot = document.querySelector('#modal-root');
 
 export class Modal extends Component {
   componentDidMount() {
-    console.log('componentDidMount');
     window.addEventListener('keydown', this.handleKeyDown);
   }
 
   componentWillUnmount() {
-    console.log('componentWillUnmount');
     window.removeEventListener('keydown', this.handleKeyDown);
   }
 
   handleKeyDown = e => {
-    // console.log(e.code);
     if (e.code === 'Escape') {
       this.props.onClose();
     }
@@ -29,10 +26,12 @@ export class Modal extends Component {
   };
 
   render() {
+    const { img, alt } = this.props;
+
     return createPortal(
       <Overlay onClick={this.handleBackdropClick}>
         <ModalWindow>
-          <img src={this.props.img} alt="" />
+          <img src={img} alt={alt} />
         </ModalWindow>
       </Overlay>,
       modalRoot

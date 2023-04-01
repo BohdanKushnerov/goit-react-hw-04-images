@@ -12,21 +12,16 @@ export class ImageGalleryItem extends Component {
       showModal: !showModal,
     }));
   };
-  // { id, webformatURL, largeImageURL }
+
   render() {
+    const { webformatURL, largeImageURL, tags } = this.props.image;
+    // console.log(this.props.image);
+
     return (
       <ImgGalleryItem className="gallery-item">
-        <Image
-          src={this.props.image.webformatURL}
-          // data-source={this.props.image.largeImageURL}
-          alt=""
-          onClick={this.toggleModal}
-        />
+        <Image src={webformatURL} alt={tags} onClick={this.toggleModal} />
         {this.state.showModal && (
-          <Modal
-            img={this.props.image.largeImageURL}
-            onClose={this.toggleModal}
-          />
+          <Modal img={largeImageURL} alt={tags} onClose={this.toggleModal} />
         )}
       </ImgGalleryItem>
     );

@@ -1,8 +1,7 @@
 import { Component } from 'react';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Loader } from 'components/Loader/Loader';
-// import { Modal } from 'components/Modal/Modal';
-import { fetchImg } from 'components/Api/Api';
+import { fetchImg } from 'services/Api';
 import { ImageGalleryList, ButtonLoadMore } from './ImageGallery.styled';
 
 export class ImageGallery extends Component {
@@ -11,11 +10,12 @@ export class ImageGallery extends Component {
     error: null,
     status: 'idle',
     page: null,
-    // showModal: false,
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.imgTheme && prevProps.imgTheme !== this.props.imgTheme) {
+    const { imgTheme } = this.props;
+
+    if (imgTheme && prevProps.imgTheme !== imgTheme) {
       try {
         this.setState({
           images: [],
@@ -49,12 +49,6 @@ export class ImageGallery extends Component {
     }
   };
 
-  // toggleModal = () => {
-  //   this.setState(({ showModal }) => ({
-  //     showModal: !showModal,
-  //   }));
-  // };
-
   render() {
     const { status, images } = this.state;
 
@@ -62,7 +56,7 @@ export class ImageGallery extends Component {
       <>
         {images.length > 0 && (
           <ImageGalleryList className="gallery">
-            {this.state.images.map(image => {
+            {images.map(image => {
               return <ImageGalleryItem key={image.id} image={image} />;
             })}
           </ImageGalleryList>
@@ -72,9 +66,7 @@ export class ImageGallery extends Component {
             Load More
           </ButtonLoadMore>
         )}
-        {/* {status === 'resolved' && <Loader />} */}
         {status === 'pending' && <Loader />}
-        {/* {showModal && <Modal onClose={this.toggleModal} />} */}
       </>
     );
   }
