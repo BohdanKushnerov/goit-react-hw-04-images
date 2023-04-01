@@ -2,9 +2,14 @@ import { Component } from 'react';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Loader } from 'components/Loader/Loader';
 import { fetchImg } from 'services/Api';
+import PropTypes from 'prop-types';
 import { ImageGalleryList, ButtonLoadMore } from './ImageGallery.styled';
 
 export class ImageGallery extends Component {
+  static propTypes = {
+    imgTheme: PropTypes.string.isRequired,
+  };
+
   state = {
     images: [],
     error: null,

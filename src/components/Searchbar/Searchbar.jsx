@@ -1,14 +1,15 @@
 import { Component } from 'react';
 
-import {
-  Header,
-  Form,
-  SearchButton,
-  SearchButtonLabel,
-  Input,
-} from './Searchbar.styled';
+import { BsSearch } from 'react-icons/bs';
+import PropTypes from 'prop-types';
+
+import { Header, Form, SearchButton, Input } from './Searchbar.styled';
 
 export class Searchbar extends Component {
+  static propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+  };
+
   state = {
     input: '',
   };
@@ -30,7 +31,7 @@ export class Searchbar extends Component {
       <Header>
         <Form onSubmit={this.handleSubmit}>
           <SearchButton type="submit">
-            <SearchButtonLabel>Search</SearchButtonLabel>
+            <BsSearch size={'2em'} />
           </SearchButton>
 
           <Input
