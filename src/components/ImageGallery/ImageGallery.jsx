@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Loader } from 'components/Loader/Loader';
+// import { Modal } from 'components/Modal/Modal';
 import { fetchImg } from 'components/Api/Api';
 import { ImageGalleryList, ButtonLoadMore } from './ImageGallery.styled';
 
@@ -10,7 +11,23 @@ export class ImageGallery extends Component {
     error: null,
     status: 'idle',
     page: null,
+    // showModal: false,
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.imgTheme && prevProps.imgTheme !== this.props.imgTheme) {
+      try {
+        this.setState({
+          images: [],
+          page: 1,
+        });
+
+        this.loadImg();
+      } catch (error) {
+        this.setState({ error, status: 'rejected' });
+      }
+    }
+  }
 
   loadImg = async () => {
     this.setState({ status: 'pending' });
@@ -32,24 +49,14 @@ export class ImageGallery extends Component {
     }
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.imgTheme && prevProps.imgTheme !== this.props.imgTheme) {
-      try {
-        this.setState({
-          images: [],
-          page: 1,
-        });
-
-        this.loadImg();
-      } catch (error) {
-        this.setState({ error, status: 'rejected' });
-      }
-    }
-  }
+  // toggleModal = () => {
+  //   this.setState(({ showModal }) => ({
+  //     showModal: !showModal,
+  //   }));
+  // };
 
   render() {
     const { status, images } = this.state;
-    // console.log(Loader);
 
     return (
       <>
@@ -67,6 +74,7 @@ export class ImageGallery extends Component {
         )}
         {/* {status === 'resolved' && <Loader />} */}
         {status === 'pending' && <Loader />}
+        {/* {showModal && <Modal onClose={this.toggleModal} />} */}
       </>
     );
   }
