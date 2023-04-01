@@ -42,15 +42,18 @@ export class ImageGallery extends Component {
 
       this.setState(prevState => {
         return {
-          page: prevState.page + 1,
-          images: prevState.images
-            ? [...prevState.images, ...images]
-            : [...images],
+          // images: prevState.images
+          //   ? [...prevState.images, ...images]
+          //   : [...images],
+          images: [...prevState.images, ...images],
+          error: null,
           status: 'resolved',
+          page: prevState.page + 1,
         };
       });
     } catch (error) {
-      this.setState({ error, status: 'rejected' });
+      console.log(error);
+      this.setState({ error: 'error', status: 'rejected' });
     }
   };
 
@@ -66,12 +69,14 @@ export class ImageGallery extends Component {
             })}
           </ImageGalleryList>
         )}
-        {status === 'resolved' && (
+        {images.length > 0 && status === 'resolved' && (
           <ButtonLoadMore type="button" onClick={() => this.loadImg()}>
             Load More
           </ButtonLoadMore>
         )}
         {status === 'pending' && <Loader />}
+        {status === 'rejected' && <div>Упс капец</div>}
+        {images.length === 0 && status === 'resolved' && <div>Ничего</div>}
       </>
     );
   }
