@@ -28,7 +28,6 @@ export class ImageGallery extends Component {
   };
 
   async componentDidUpdate(prevProps, prevState) {
-    console.log(this.state);
     if (
       this.state.status === Status.RESOLVED &&
       this.state.images.length === this.state.totalHits &&
@@ -77,9 +76,18 @@ export class ImageGallery extends Component {
           };
         }
       );
+
+      this.scrollToBottom();
     } catch (error) {
       this.setState({ error: 'error', status: Status.REJECTED });
     }
+  };
+
+  scrollToBottom = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    });
   };
 
   render() {
