@@ -28,6 +28,14 @@ export class ImageGallery extends Component {
   };
 
   async componentDidUpdate(prevProps, prevState) {
+    console.log(this.state);
+    if (
+      this.state.status === Status.RESOLVED &&
+      this.state.images.length === this.state.totalHits &&
+      prevState.images.length !== this.state.totalHits
+    ) {
+      toast.warn('Sorry, there are no images matching your search query.');
+    }
     const { imgTheme } = this.props;
 
     if (imgTheme && prevProps.imgTheme !== imgTheme) {
@@ -49,7 +57,15 @@ export class ImageGallery extends Component {
         this.state.page
       );
 
-      await this.setState({ totalHits: totalHits });
+      await this.setState(prevState => {
+        return {
+          images: [...prevState.images, ...normalizedImages],
+          error: null,
+          status: Status.RESOLVED,
+          page: prevState.page + 1,
+          totalHits: totalHits,
+        };
+      });
 
       const normalizedImages = hits.map(
         ({ id, webformatURL, largeImageURL, tags }) => {
@@ -61,15 +77,6 @@ export class ImageGallery extends Component {
           };
         }
       );
-
-      await this.setState(prevState => {
-        return {
-          images: [...prevState.images, ...normalizedImages],
-          error: null,
-          status: Status.RESOLVED,
-          page: prevState.page + 1,
-        };
-      });
     } catch (error) {
       this.setState({ error: 'error', status: Status.REJECTED });
     }
@@ -92,10 +99,6 @@ export class ImageGallery extends Component {
             Load More
           </ButtonLoadMore>
         )}
-        {images.length === totalHits &&
-          toast.warn(
-            'Sorry, there are no images matching your search query :)'
-          )}
         {status === Status.PENDING && <Loader />}
         {status === Status.REJECTED && (
           <h2>
