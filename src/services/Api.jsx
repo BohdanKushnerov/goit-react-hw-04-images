@@ -14,5 +14,5 @@ export const fetchImg = async (imgTheme, page) => {
     },
   });
 
-  return response.data.hits;
+  return response.data;
 };

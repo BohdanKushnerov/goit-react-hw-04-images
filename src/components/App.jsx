@@ -3,6 +3,7 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Container } from './App.styled';
 import { MyGlobalStyles } from 'globalStyles/GlobalStyles.styled';
+import { ToastContainer } from 'react-toastify';
 
 export class App extends Component {
   state = {
@@ -15,11 +16,14 @@ export class App extends Component {
 
   render() {
     return (
-      <Container>
-        <MyGlobalStyles />
-        <Searchbar onSubmit={this.handleFormSubmit} />
-        <ImageGallery imgTheme={this.state.imgTheme} />
-      </Container>
+      <div>
+        <Container>
+          <MyGlobalStyles />
+          <Searchbar onSubmit={this.handleFormSubmit} />
+          <ImageGallery imgTheme={this.state.imgTheme} />
+          <ToastContainer />
+        </Container>
+      </div>
     );
   }
 }

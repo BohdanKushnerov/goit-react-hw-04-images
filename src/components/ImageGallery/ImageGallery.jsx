@@ -4,6 +4,8 @@ import { Loader } from 'components/Loader/Loader';
 import { fetchImg } from 'services/Api';
 import PropTypes from 'prop-types';
 import { ImageGalleryList, ButtonLoadMore } from './ImageGallery.styled';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Status = {
   IDLE: 'idle',
@@ -22,18 +24,19 @@ export class ImageGallery extends Component {
     error: null,
     status: Status.IDLE,
     page: null,
+    totalHits: null,
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     const { imgTheme } = this.props;
 
     if (imgTheme && prevProps.imgTheme !== imgTheme) {
-      this.setState({
+      await this.setState({
         images: [],
         page: 1,
       });
 
-      this.loadImg();
+      await this.loadImg();
     }
   }
 
@@ -41,24 +44,39 @@ export class ImageGallery extends Component {
     this.setState({ status: Status.PENDING });
 
     try {
-      const images = await fetchImg(this.props.imgTheme, this.state.page);
+      const { hits, totalHits } = await fetchImg(
+        this.props.imgTheme,
+        this.state.page
+      );
 
-      this.setState(prevState => {
+      await this.setState({ totalHits: totalHits });
+
+      const normalizedImages = hits.map(
+        ({ id, webformatURL, largeImageURL, tags }) => {
+          return {
+            id,
+            webformatURL,
+            largeImageURL,
+            tags,
+          };
+        }
+      );
+
+      await this.setState(prevState => {
         return {
-          images: [...prevState.images, ...images],
+          images: [...prevState.images, ...normalizedImages],
           error: null,
           status: Status.RESOLVED,
           page: prevState.page + 1,
         };
       });
     } catch (error) {
-      console.log(error);
       this.setState({ error: 'error', status: Status.REJECTED });
     }
   };
 
   render() {
-    const { status, images } = this.state;
+    const { status, images, totalHits } = this.state;
 
     return (
       <>
@@ -69,11 +87,15 @@ export class ImageGallery extends Component {
             })}
           </ImageGalleryList>
         )}
-        {images.length > 0 && status === Status.RESOLVED && (
+        {!(images.length >= totalHits) && status === Status.RESOLVED && (
           <ButtonLoadMore type="button" onClick={() => this.loadImg()}>
             Load More
           </ButtonLoadMore>
         )}
+        {images.length === totalHits &&
+          toast.warn(
+            'Sorry, there are no images matching your search query :)'
+          )}
         {status === Status.PENDING && <Loader />}
         {status === Status.REJECTED && (
           <h2>
