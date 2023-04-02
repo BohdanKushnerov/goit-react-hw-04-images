@@ -2,11 +2,7 @@ import { Component } from 'react';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Container } from './App.styled';
-
-// Сделать что нет картинок про массиве 0
-// + еррор при ссылке
-// Добавить глобальные стили
-// status рефактор
+import { MyGlobalStyles } from 'globalStyles/GlobalStyles.styled';
 
 export class App extends Component {
   state = {
@@ -20,6 +16,7 @@ export class App extends Component {
   render() {
     return (
       <Container>
+        <MyGlobalStyles />
         <Searchbar onSubmit={this.handleFormSubmit} />
         <ImageGallery imgTheme={this.state.imgTheme} />
       </Container>

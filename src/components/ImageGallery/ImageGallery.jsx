@@ -5,6 +5,13 @@ import { fetchImg } from 'services/Api';
 import PropTypes from 'prop-types';
 import { ImageGalleryList, ButtonLoadMore } from './ImageGallery.styled';
 
+const Status = {
+  IDLE: 'idle',
+  PENDING: 'pending',
+  RESOLVED: 'resolved',
+  REJECTED: 'rejected',
+};
+
 export class ImageGallery extends Component {
   static propTypes = {
     imgTheme: PropTypes.string.isRequired,
@@ -13,7 +20,7 @@ export class ImageGallery extends Component {
   state = {
     images: [],
     error: null,
-    status: 'idle',
+    status: Status.IDLE,
     page: null,
   };
 
@@ -21,39 +28,32 @@ export class ImageGallery extends Component {
     const { imgTheme } = this.props;
 
     if (imgTheme && prevProps.imgTheme !== imgTheme) {
-      try {
-        this.setState({
-          images: [],
-          page: 1,
-        });
+      this.setState({
+        images: [],
+        page: 1,
+      });
 
-        this.loadImg();
-      } catch (error) {
-        this.setState({ error, status: 'rejected' });
-      }
+      this.loadImg();
     }
   }
 
   loadImg = async () => {
-    this.setState({ status: 'pending' });
+    this.setState({ status: Status.PENDING });
 
     try {
       const images = await fetchImg(this.props.imgTheme, this.state.page);
 
       this.setState(prevState => {
         return {
-          // images: prevState.images
-          //   ? [...prevState.images, ...images]
-          //   : [...images],
           images: [...prevState.images, ...images],
           error: null,
-          status: 'resolved',
+          status: Status.RESOLVED,
           page: prevState.page + 1,
         };
       });
     } catch (error) {
       console.log(error);
-      this.setState({ error: 'error', status: 'rejected' });
+      this.setState({ error: 'error', status: Status.REJECTED });
     }
   };
 
@@ -69,14 +69,21 @@ export class ImageGallery extends Component {
             })}
           </ImageGalleryList>
         )}
-        {images.length > 0 && status === 'resolved' && (
+        {images.length > 0 && status === Status.RESOLVED && (
           <ButtonLoadMore type="button" onClick={() => this.loadImg()}>
             Load More
           </ButtonLoadMore>
         )}
-        {status === 'pending' && <Loader />}
-        {status === 'rejected' && <div>Упс капец</div>}
-        {images.length === 0 && status === 'resolved' && <div>Ничего</div>}
+        {status === Status.PENDING && <Loader />}
+        {status === Status.REJECTED && (
+          <h2>
+            An error occurred, we could not upload the photo, please try
+            reloading the page and try again :)
+          </h2>
+        )}
+        {images.length === 0 && status === Status.RESOLVED && (
+          <h2>We didn't find anything according to your request</h2>
+        )}
       </>
     );
   }
