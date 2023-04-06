@@ -1,40 +1,28 @@
-import { Component } from 'react';
-// import { Searchbar } from './Searchbar/Searchbar';
+import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Container } from './App.styled';
 import { MyGlobalStyles } from 'globalStyles/GlobalStyles.styled';
 import { ToastContainer } from 'react-toastify';
+import { useState } from 'react';
 
-export class App extends Component {
-  // state = {
-  //   imgTheme: '',
-  //   images: [],
-  //   page: 1,
-  // };
+export function App() {
+  const [imgTheme, setImgTheme] = useState('');
 
-  // handleFormSubmit = imgTheme => {
-  //   this.setState({ imgTheme });
-  //   this.setState({ images: [] });
-  //   this.setState({ page: 1 });
-  // };
+  const handleFormSubmit = searchValue => {
+    if (searchValue === imgTheme && searchValue !== '') {
+      return;
+    }
+    setImgTheme(searchValue);
+  };
 
-  // попробуй функц яка передасть значения по дефолту: тему, [], 1
-
-  render() {
-    return (
-      <div>
-        <Container>
-          <MyGlobalStyles />
-          {/* <Searchbar onSubmit={this.handleFormSubmit} /> */}
-          <ImageGallery
-          // imgTheme={this.state.imgTheme}
-          // resetImg={this.state.images}
-          // resetPage={this.state.page}
-          // resetState={this.state}
-          />
-          <ToastContainer />
-        </Container>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <Container>
+        <MyGlobalStyles />
+        <Searchbar onSubmit={handleFormSubmit} />
+        <ImageGallery imgTheme={imgTheme} />
+        <ToastContainer />
+      </Container>
+    </div>
+  );
 }
