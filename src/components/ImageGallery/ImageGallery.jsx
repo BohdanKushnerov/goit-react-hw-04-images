@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Loader } from 'components/Loader/Loader';
 import { fetchImg } from 'services/Api';
@@ -15,36 +15,64 @@ const Status = {
 };
 
 export function ImageGallery({ imgTheme }) {
+  // const [images, setImages] = useState(null);
   const [images, setImages] = useState([]);
   const [error, setError] = useState(null);
   const [status, setStatus] = useState(Status.IDLE);
   const [page, setPage] = useState(1);
   const [totalHits, setTotalHits] = useState(null);
+  const [search, setSearch] = useState('');
+  // const [search, setSearch] = useState(null);
 
   //==========================================
-  const prevTheme = useRef();
+  // const prevTheme = useRef();
 
-  const updateValue = () => {
-    setImages([]);
-    setPage(1);
-  };
-  //========================================
+  // const updateValue = theme => {
+  //   setSearch(theme);
+  //   setImages([]);
+  //   setPage(1);
+  // };
+
+  // if (prevTheme.current !== imgTheme && imgTheme && prevTheme.current) {
+  //   prevTheme.current = imgTheme;
+
+  //   updateValue(imgTheme);
+  // }
+
+  // console.log(prevTheme);
+
+  // console.log(search);
+  // console.log(page);
+  // console.log(images);
 
   useEffect(() => {
     if (!imgTheme) {
       return;
     }
 
-    if (prevTheme.current !== imgTheme) {
-      prevTheme.current = imgTheme;
-      updateValue();
+    setSearch(imgTheme);
+    setImages([]);
+    setPage(1);
+
+    // if (prevTheme.current !== imgTheme && imgTheme && prevTheme.current) {
+    //   prevTheme.current = imgTheme;
+
+    //   updateValue(imgTheme);
+    // }
+  }, [imgTheme]);
+
+  //========================================
+
+  useEffect(() => {
+    if (!search) {
+      return;
     }
 
     async function loadImg() {
       setStatus(Status.PENDING);
 
       try {
-        const { hits, totalHits } = await fetchImg(imgTheme, page);
+        const { hits, totalHits } = await fetchImg(search, page);
 
         const normalizedImages = hits.map(
           ({ id, webformatURL, largeImageURL, tags }) => {
@@ -68,7 +96,7 @@ export function ImageGallery({ imgTheme }) {
       }
     }
     loadImg();
-  }, [imgTheme, page]);
+  }, [search, page]);
 
   return (
     <>
