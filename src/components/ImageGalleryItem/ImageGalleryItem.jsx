@@ -3,20 +3,17 @@ import { Modal } from 'components/Modal/Modal';
 import PropTypes from 'prop-types';
 import { ImgGalleryItem, Image } from './ImageGalleryItem.styled';
 
-export function ImageGalleryItem({ image }) {
+export function ImageGalleryItem({
+  image: { webformatURL, largeImageURL, tags },
+}) {
   const [showModal, setShowModal] = useState(false);
 
   const toggleModal = () => {
-    // this.setState(({ showModal }) => ({
-    //   showModal: !showModal,
-    // }));
     setShowModal(prevState => !prevState);
   };
 
-  const { webformatURL, largeImageURL, tags } = image;
-
   return (
-    <ImgGalleryItem className="gallery-item">
+    <ImgGalleryItem>
       <Image src={webformatURL} alt={tags} onClick={toggleModal} />
       {showModal && (
         <Modal img={largeImageURL} alt={tags} onClose={toggleModal} />

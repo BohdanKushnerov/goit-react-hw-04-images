@@ -4,7 +4,7 @@ import { Loader } from 'components/Loader/Loader';
 import { fetchImg } from 'services/Api';
 import PropTypes from 'prop-types';
 import { ImageGalleryList, ButtonLoadMore } from './ImageGallery.styled';
-// import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Status = {
@@ -15,35 +15,12 @@ const Status = {
 };
 
 export function ImageGallery({ imgTheme }) {
-  // const [images, setImages] = useState(null);
   const [images, setImages] = useState([]);
   const [error, setError] = useState(null);
   const [status, setStatus] = useState(Status.IDLE);
   const [page, setPage] = useState(1);
-  const [totalHits, setTotalHits] = useState(null);
+  const [totalHits, setTotalHits] = useState(0);
   const [search, setSearch] = useState('');
-  // const [search, setSearch] = useState(null);
-
-  //==========================================
-  // const prevTheme = useRef();
-
-  // const updateValue = theme => {
-  //   setSearch(theme);
-  //   setImages([]);
-  //   setPage(1);
-  // };
-
-  // if (prevTheme.current !== imgTheme && imgTheme && prevTheme.current) {
-  //   prevTheme.current = imgTheme;
-
-  //   updateValue(imgTheme);
-  // }
-
-  // console.log(prevTheme);
-
-  // console.log(search);
-  // console.log(page);
-  // console.log(images);
 
   useEffect(() => {
     if (!imgTheme) {
@@ -53,15 +30,7 @@ export function ImageGallery({ imgTheme }) {
     setSearch(imgTheme);
     setImages([]);
     setPage(1);
-
-    // if (prevTheme.current !== imgTheme && imgTheme && prevTheme.current) {
-    //   prevTheme.current = imgTheme;
-
-    //   updateValue(imgTheme);
-    // }
   }, [imgTheme]);
-
-  //========================================
 
   useEffect(() => {
     if (!search) {
@@ -86,7 +55,6 @@ export function ImageGallery({ imgTheme }) {
         );
 
         setImages(prevState => [...prevState, ...normalizedImages]);
-
         setError(null);
         setStatus(Status.RESOLVED);
         setTotalHits(totalHits);
@@ -98,12 +66,17 @@ export function ImageGallery({ imgTheme }) {
     loadImg();
   }, [search, page]);
 
+  useEffect(() => {
+    if (totalHits <= 0 || images.length !== totalHits) return;
+    toast.warn('Sorry, there are no images matching your search query.');
+  }, [images.length, totalHits]);
+
   return (
     <>
       {images.length > 0 && (
-        <ImageGalleryList className="gallery">
-          {images.map(image => {
-            return <ImageGalleryItem key={image.id} image={image} />;
+        <ImageGalleryList>
+          {images.map(({ id, ...restProps }) => {
+            return <ImageGalleryItem key={id} image={restProps} />;
           })}
         </ImageGalleryList>
       )}
